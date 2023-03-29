@@ -1,0 +1,45 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+      - 'feature/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Try to fail
+      run: exit 1
+
+    - name: if fail
+      uses: actions/github-script@0.2.0
+      with:
+        github-token: ${{github.token}}
+        script: |
+          const ref = "${{github.ref}}"
+          const pull_number = Number(ref.split("/")[2])
+          await github.pulls.createReview({
+            ...context.repo,
+            pull_number,
+            body:"Failed",
+            event: "REQUEST_CHANGES"
+          })
+      if: failure()
+
+    - name: if success
+      uses: actions/github-script@0.2.0
+      with:
+        github-token: ${{github.token}}
+        script: |
+          const ref = "${{github.ref}}"
+          const pull_number = Number(ref.split("/")[2])
+          await github.pulls.createReview({
+            ...context.repo,
+            pull_number,
+            body:"Succeed",
+            event: "APPROVE"
+          })
+      if: success()
