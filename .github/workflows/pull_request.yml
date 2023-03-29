@@ -23,13 +23,13 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: pull_number,
-            reviewers: [context.actor]
+            reviewers: ["github-actions"]
           })
 
     - name: Try to fail
       run: |
-        sleep 100
-        exit 1
+        # sleep 100
+        exit 0
 
     - name: if fail
       uses: actions/github-script@0.2.0
