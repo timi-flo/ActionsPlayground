@@ -6,30 +6,19 @@ on:
       - main
       - 'feature/**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: ignore approval by bot (re-request)
-      uses: actions/github-script@v6
-      with:
-        github-token: ${{github.token}}
-        script: |
-          const ref = "${{github.ref}}"
-          const pull_number = Number(ref.split("/")[2])
-
-          github.rest.pulls.requestReviewers({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: pull_number,
-            reviewers: ["github-actions"]
-          })
-
     - name: Try to fail
       run: |
-        sleep 100
-        exit 1
+        # sleep 100
+        exit 0
 
     - name: if fail
       uses: actions/github-script@0.2.0
