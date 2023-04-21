@@ -6,7 +6,7 @@ jobs:
   label_bug:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
+      pull-requests: 'write'
     if: startsWith(github.head_ref, 'fix/')
     steps:
       - uses: actions/github-script@v6
@@ -22,7 +22,7 @@ jobs:
   label_feature:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
+      pull-requests: 'write'
     if: startsWith(github.head_ref, 'feature/')
     steps:
       - uses: actions/github-script@v6
