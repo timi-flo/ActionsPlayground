@@ -20,7 +20,7 @@ jobs:
     - name: Try to fail
       run: |
         sleep 5
-        exit 1
+        exit 0
 
     - name: if fail
       uses: actions/github-script@0.2.0
