@@ -1,0 +1,53 @@
+name: Pull Request
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    branches:
+      - main
+      - 'feature/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: ${{ github.event.pull_request.draft == false }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Try to fail
+      run: |
+        sleep 5
+        exit 1
+
+    - name: if fail
+      uses: actions/github-script@0.2.0
+      with:
+        github-token: ${{github.token}}
+        script: |
+          const ref = "${{github.ref}}"
+          const pull_number = Number(ref.split("/")[2])
+          await github.pulls.createReview({
+            ...context.repo,
+            pull_number,
+            body:"Failed",
+            event: "REQUEST_CHANGES"
+          })
+      if: failure()
+
+    - name: if success
+      uses: actions/github-script@0.2.0
+      with:
+        github-token: ${{github.token}}
+        script: |
+          const ref = "${{github.ref}}"
+          const pull_number = Number(ref.split("/")[2])
+          await github.pulls.createReview({
+            ...context.repo,
+            pull_number,
+            body:"Succeed",
+            event: "APPROVE"
+          })
+      if: success()
